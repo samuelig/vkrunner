@@ -36,6 +36,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <locale.h>
 
 struct gui_worker {
         GMutex mutex;
@@ -231,11 +232,20 @@ static void
 child_worker(struct gui_worker *worker)
 {
         GString *script = g_string_new(NULL);
-        struct vr_executor *executor = vr_executor_new();
 
         close(worker->child_out[0]);
         close(worker->parent_out[1]);
 
+        /* VkRunner has a bug that parsing floating-point numbers is
+         * affected by the locale. GTK sets up the locale
+         * automatically so the bug gets triggered. As a workaround we
+         * can reset the locale back to the C locale just in this
+         * child helper process. This won’t affect the rest of the UI
+         * because it is limited to this process.
+         */
+        setlocale(LC_ALL, "C");
+
+        struct vr_executor *executor = vr_executor_new();
         vr_executor_set_user_data(executor, worker);
         vr_executor_set_error_cb(executor, error_cb);
         vr_executor_set_inspect_cb(executor, inspect_cb);
