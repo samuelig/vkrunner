@@ -59,4 +59,6 @@ gui_initial_script[] =
         "draw arrays TRIANGLE_LIST 0 3\n"
         "\n"
         "uniform vec4 0 0.0 1.0 0.0 1.0 \n"
-        "draw rect 0.4 -0.4 0.5 0.5\n";
+        "draw rect 0.4 -0.4 0.5 0.5\n"
+        "\n"
+        "relative probe rect rgb (0.71, 0.31, 0.23, 0.23) (0.0, 1.0, 0.0)\n";
